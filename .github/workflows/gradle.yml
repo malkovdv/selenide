@@ -21,7 +21,7 @@ jobs:
         run: ls -la ./artifacts/
 
       - name: Start SUT
-        run: java -jar ./artifacts/app-card-delivery.jar
+        run: java -jar ./artifacts/app-card-delivery.jar &
         background: true
 
       - name: Wait for application
