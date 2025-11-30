@@ -21,7 +21,29 @@ jobs:
         # имя файла SUT будет отличаться в каждой задаче.
         # & означает, что в фоновом режиме не блокируем терминал для запуска тестов,
         # обязательно должен быть для запуска SUT в CI
-        run: java -jar ./artifacts/app-card-delivery.jar &
+        run: java -jar ./artifacts/app-card-delivery.jar
+        background: true
+
+      - name: Wait and verify application
+        run: |
+          echo "Waiting for application to start..."
+          sleep 10
+        
+          echo "Checking Java processes:"
+          ps aux | grep java
+        
+          echo "Checking port 9999:"
+          netstat -tulpn | grep :9999 || echo "Port 9999 not found"
+        
+          echo "Testing application connection:"
+          curl -v http://localhost:9999 || echo "CURL failed"
+        
+          if curl -f http://localhost:9999; then
+          echo "✅ Application is ready!"
+          else
+          echo "❌ Application failed to start"
+          exit 1
+          fi
 
       - name: Build with Gradle
         # Запускаем автотесты
