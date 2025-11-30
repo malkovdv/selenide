@@ -17,17 +17,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Check artifacts
-        run: ls -la ./artifacts/
-
       - name: Start SUT
         run: java -jar ./artifacts/app-card-delivery.jar &
 
-
-      - name: Wait for application
-        run: |
-          sleep 15
-          curl -f http://localhost:9999
 
       - name: Build with Gradle
         # Запускаем автотесты
