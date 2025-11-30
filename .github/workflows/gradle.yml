@@ -22,7 +22,7 @@ jobs:
 
       - name: Start SUT
         run: java -jar ./artifacts/app-card-delivery.jar &
-        background: true
+
 
       - name: Wait for application
         run: |
