@@ -16,34 +16,21 @@ jobs:
           distribution: 'adopt'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Check artifacts
+        run: ls -la ./artifacts/
+
       - name: Start SUT
-      - run: |
-      - java -jar ./artifacts/app-card-delivery.jar &
-      - echo "Application started in background"
+        run: java -jar ./artifacts/app-card-delivery.jar
+        background: true
 
       - name: Wait for application
-      - run: |
-      - echo "Waiting for application to start..."
-      - sleep 15
-
-      - echo "Checking if application is running:"
-      - ps aux | grep java
-      - netstat -tulpn | grep :9999 || echo "Port check failed"
-
-      - echo "Testing connection..."
-      - if curl -f http://localhost:9999; then
-      - echo "✅ Application is ready!"
-      - else
-      - echo "❌ Application connection failed"
-      - # Попробуем перезапустить
-      - pkill -f "java.*app-card-delivery" || true
-      - java -jar ./artifacts/app-card-delivery.jar &
-      - sleep 10
-      - curl -f http://localhost:9999 || exit 1
-      - fi
+        run: |
+          sleep 15
+          curl -f http://localhost:9999
 
       - name: Build with Gradle
         # Запускаем автотесты
         # Для проектов на базе Selenide необходимо добавить параметр для запуска браузера
         # в headless режиме -Dselenide.headless=true, параметр --info должен остаться
-        run: ./gradlew clean test -D"selenide.headless=true" --info
+        run: ./gradlew test -Dselenide.headless=true --info
